@@ -1,0 +1,115 @@
+﻿@model EmployeeCreateViewModel
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <div class="container">
+
+        <div class="card">
+            <div class="card-header">Create New </div>
+            <div class="card-body">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <form enctype="multipart/form-data" asp-controller="Home" asp-action="Create" method="post">
+                    <div class="form-group">
+                        <label asp-for="Name" class="col-form-label-sm">Name:</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="col-form-label-sm">Email:</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Phone" class="col-form-label-sm">Phone:</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Department" class="col-form-label-sm">Department:</label>
+                        <div class="col-sm-10">
+                            <select asp-for="Department" class="form-control" asp-items="Html.GetEnumSelectList<Dept>()">
+                                <option value="">--Select option--</option>
+                            </select>
+                            <span asp-validation-for="Department" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="statelist" class="col-form-label-sm">State of Origin:</label>
+                            <div class="col-sm-10">
+                                <select asp-for="statelist" class="form-control" asp-items="Html.GetEnumSelectList<Statelist>()">
+                                    <option value="">--Select option--</option>
+                                </select>
+                                <span asp-validation-for="statelist" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Gender" class="col-form-label-sm">Gender:</label>
+                            <div class="col-sm-10">
+                                <Select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<Gender>()">
+                                    <option value="">--Select Option--</option>
+                                </Select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Photo" class="col-form-label-sm">Email:</label>
+                            <div class="col-sm-10">
+                                <div class="custom-file">
+                                    <input asp-for="Photo" class="form-control custom-file-input" />
+                                    <label class="custom-file-label">Choose File... </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    @section Scripts {
+
+                        <script>
+
+                            $(document).ready(function () {
+
+                               
+                                $('.custom-file-input').on("change", function () {
+                                
+                                    var fileName = $(this).val().split("\\").pop();
+                                   
+                                    $(this).next('.custom-file-label').html(fileName);
+                                });
+                            });
+                        </script>
+                    }
+
+</form>
+
+            </div>
+
+
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

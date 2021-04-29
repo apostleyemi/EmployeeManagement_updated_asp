@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Employee>
+
+
+    
+    <hr />
+
+    
+        
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"> <h1 class="display-4">Employee Information</h1></div>
+
+                <div class="card-body">
+                    <table class="table table-responsive align-content-sm-center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Gender</th>
+                                <th>Phone</th>
+                                <th>State of Origin</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var emp in Model)
+                            {
+                            <tr>
+                                <td>@emp.Id</td>
+                                <td>@emp.Name</td>
+                                <td>@emp.Department</td>
+                                <td>@emp.Gender</td>
+                                <td>@emp.Phone</td>
+                                <td>@emp.statelist</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@emp.Id" class="btn btn-sm btn-primary">View</a>
+                                    <a asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-sm btn-warning">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@emp.Id" class="btn btn-sm btn-danger">Delete</a>
+
+
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+   
+
