@@ -25,7 +25,12 @@
 
 
             </div>
-            <div> <a asp-action="index" asp-controller="Home" class="btn btn-sm btn-info"><< Back to the List</a></div>
+            <div>
+                <a asp-action="index" asp-controller="Home" class="btn btn-sm btn-info"><< Back to the List</a>
+
+
+                <a asp-action="Edit" asp-route-id="@Model.newEmployee.Id" class="btn btn-sm btn-warning">Edit</a>
+            </div>
            
 
         </div>

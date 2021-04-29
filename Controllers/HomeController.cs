@@ -1,6 +1,7 @@
 ﻿using EmployeeManagement.Models;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,6 +17,7 @@ namespace EmployeeManagement.Controllers
     {
         private IEmployeeRepository _employeeRepository;
         private readonly IHostingEnvironment hostingEnvironment;
+        
 
         public HomeController(IEmployeeRepository employeeRepository,
                                 IHostingEnvironment hostingEnvironment)
@@ -30,6 +32,7 @@ namespace EmployeeManagement.Controllers
             return View(allstaff);
         }
 
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             Employee employee = _employeeRepository.GetEmployee(id);
@@ -52,6 +55,70 @@ namespace EmployeeManagement.Controllers
            
         }
 
+        [HttpPost]
+        public IActionResult Edit(EmployeeEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Employee employee = _employeeRepository.GetEmployee(model.id);
+
+                employee.Name = model.Name;
+                employee.Phone = model.Phone;
+                employee.statelist = model.statelist;
+                employee.Department = model.Department;
+                employee.Email = model.Email;
+                employee.Gender = model.Gender;
+
+                if (model.Photo != null)
+                {
+
+                    //this method checks for previous uploaded photo from Upload
+                    if(model.ExistingPhotoPath !=null)
+                    {
+
+                       string filePath= Path.Combine(hostingEnvironment.WebRootPath, "Uploads", model.ExistingPhotoPath);
+                        System.IO.File.Delete(filePath);
+                    }
+                    // ProcessUploadFile is a function that uploads phot to the uploads folder
+                    //this methos is use by edit and create method
+                    //Note edit collect from EmployeeEditViewModel while create receives from EmployeeCreateViewModel
+                    //the ProcessUploadFile receives from EmployeeCreateViewModel being the parent class for EmployeeEditViewModel
+                    employee.photopath = ProcessUploadFile(model);
+                }
+
+              
+                _employeeRepository.Update(employee);
+                return RedirectToAction("Index");
+            }
+
+
+            return View();
+
+
+        }
+         
+        private string ProcessUploadFile(EmployeeCreateViewModel model)
+        {
+            string uniqueFileName = null;
+            if (model.Photo != null)
+            {    //getting file path(folder inside wwwroot)
+                string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "Uploads");
+
+                //making the image name unique
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.Photo.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                //string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                {
+                    model.Photo.CopyTo(fs);
+                }
+
+            }
+
+            return uniqueFileName;
+        }
+
         public IActionResult Delete(int id)
         {
            // Employee emp = _employeeRepository.GetEmployee(id);
@@ -59,13 +126,22 @@ namespace EmployeeManagement.Controllers
 
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int? id)
         {
+            //id can be int or not int
+
+            Employee employee = _employeeRepository.GetEmployee(id.Value);
+            if(employee == null)
+            {
+                Response.StatusCode = 404;
+                return View("EmployeeNotFound", id.Value);
+            }
+
             HomeGetDetailsViewModel homeGetDetailsViewModel = new HomeGetDetailsViewModel()
             {
                 // employee, pageTitle, newEployee
 
-                newEmployee = _employeeRepository.GetEmployee(id),
+                newEmployee = _employeeRepository.GetEmployee(id.Value),
                 PageTitle = "Bello is the Student Details: "
                 
 
@@ -88,22 +164,7 @@ namespace EmployeeManagement.Controllers
         {
             if(ModelState.IsValid)
             {
-                string uniqueFileName = null;
-                if(model.Photo !=null)
-                {    //getting file path(folder inside wwwroot)
-                    string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "Uploads");
-
-                    //making the image name unique
-                   uniqueFileName= Guid.NewGuid().ToString()+"_"+Path.GetFileName(model.Photo.FileName);
-                    string filePath=Path.Combine(uploadsFolder, uniqueFileName);
-                    //string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                 using(FileStream fs= new FileStream(filePath, FileMode.Create))
-                    {
-                        model.Photo.CopyTo(fs);
-                    }
-
-                }
+                string uniqueFileName = ProcessUploadFile(model);
 
                 Employee newEmployee = new Employee
                 {
