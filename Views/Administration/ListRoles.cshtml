@@ -1,0 +1,51 @@
+﻿@model IEnumerable<IdentityRole>
+
+@{ 
+    ViewBag.Title = "Role List";
+    int sno = 1;
+}
+
+<div>
+    <div>
+        <a class="btn btn-primary" asp-action="CreateRole" asp-controller="Administration">Create Role</a>
+    </div>
+    @if (Model.Any())
+    {
+        <table class="table table-responsive table-striped">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>RoleID</th>
+                    <th>Role Name</th>
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var role in Model)
+                {
+
+                    <tr>
+                        <td>@(sno++)</td>
+                        <td>@role.Id</td>
+                        <td>@role.Name</td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" asp-action="EditRole" asp-controller="Administration"
+                               asp-route-id="@role.Id">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+
+
+        </table>
+    }
+    else
+    {
+        <h2>No role exist</h2>
+        <a class="btn btn-primary" asp-action="CreateRole" asp-controller="Administration">Create Role</a>
+    }
+</div>

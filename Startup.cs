@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace EmployeeManagement
 {
@@ -34,8 +36,29 @@ namespace EmployeeManagement
           
             services.AddDbContextPool<AppDbContext>(
                 options =>options.UseSqlServer(Configuration.GetConnectionString("EmployeeDbConnection")));
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+
+                options.Password.RequiredLength = 10;
+                options.Password.RequiredUniqueChars = 3;
+            }).AddEntityFrameworkStores<AppDbContext>();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+
+                options.Password.RequiredLength = 10;
+                options.Password.RequiredUniqueChars = 3;
+            });
+                 
+
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
-             services.AddControllersWithViews();
+             services.AddControllersWithViews(options => {
+                 var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+
+                 options.Filters.Add(new AuthorizeFilter(policy));
+                             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,25 +66,30 @@ namespace EmployeeManagement
         {
             if (env.IsDevelopment())
             {
+                app.UseStatusCodePagesWithRedirects("/Error/{0}");
                 app.UseDeveloperExceptionPage();
 
             }
             else
             {
 
-              //  app.UseStatusCodePages();
-                app.UseStatusCodePagesWithRedirects("/Error/{0}");
-               // app.UseExceptionHandler("/Home/Error");
+                //  app.UseStatusCodePages();
+                //  app.UseStatusCodePagesWithRedirects("/Error/{0}");
+                //  app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
             app.UseAuthorization();
-
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

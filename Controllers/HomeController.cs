@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Models;
 using EmployeeManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
 {
+  
     public class HomeController : Controller
     {
         private IEmployeeRepository _employeeRepository;
@@ -26,6 +28,7 @@ namespace EmployeeManagement.Controllers
             this.hostingEnvironment = hostingEnvironment;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var allstaff = _employeeRepository.GetAllEmployee();
@@ -126,9 +129,11 @@ namespace EmployeeManagement.Controllers
 
         }
 
+        [AllowAnonymous]
         public IActionResult Details(int? id)
         {
             //id can be int or not int
+           // throw new Exception("Error in Details View");
 
             Employee employee = _employeeRepository.GetEmployee(id.Value);
             if(employee == null)
@@ -209,6 +214,7 @@ namespace EmployeeManagement.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [AllowAnonymous]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
