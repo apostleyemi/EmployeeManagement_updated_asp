@@ -1,4 +1,4 @@
-﻿@model EditRoleVIewModel
+﻿@model EditRoleViewModel
 
 @{
     ViewBag.Title = "Edit Role";
@@ -9,30 +9,31 @@
 <h1>Edit Role</h1>
 <div class="card">
     <div class="card-header">
-        <span asp-validation-summary="All"></span>
+
     </div>
-   
+
     <form asp-action="EditRole" asp-controller="Administration" method="post">
         <div class="card-body">
             <div class="form-group  row ">
-               <label asp-for="Id" class="col-form-label"></label> 
-                 <input asp-for="Id" disabled class="form-control" />
+                <label asp-for="Id" class="col-form-label"></label>
+                <input asp-for="Id" disabled class="form-control" />
 
             </div>
             <div class=" row form-group">
-                 <label asp-for="RoleName" class="col-form-label"></label>
-                 <input asp-for="RoleName" class="form-control" />
+                <label asp-for="RoleName" class="col-form-label"></label>
+                <input asp-for="RoleName" class="form-control" />
+                <span asp-validation-for="RoleName"></span>
 
             </div>
         </div>
-
+        <span asp-validation-summary="All" class="text-danger"></span>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">Update</button>
-            <button type="submit" class="btn btn-primary">Cancel</button>
+            <a asp-action="ListRole" asp-controller="Administration" class="btn btn-primary">Cancel</a>
         </div>
-        
+
     </form>
-    
+
 </div>
 <hr />
 
@@ -66,6 +67,8 @@
 else
 {
     <h1>No available user for the selected role</h1>
-    <button asp-action="RoleList" asp-controller="Administration" class="btn btn-primary">CLick to go back</button>
+
 
 }
+
+<a asp-action="EditUsersInRole" asp-route-roleId="@Model.Id" asp-controller="Administration" class="btn btn-primary">Add or Remove User</a>

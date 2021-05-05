@@ -3,6 +3,7 @@ using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,14 +19,14 @@ namespace EmployeeManagement.Controllers
     public class HomeController : Controller
     {
         private IEmployeeRepository _employeeRepository;
-        private readonly IHostingEnvironment hostingEnvironment;
+        private readonly IWebHostEnvironment iWebHostEnvironment;
         
 
         public HomeController(IEmployeeRepository employeeRepository,
-                                IHostingEnvironment hostingEnvironment)
+                                IWebHostEnvironment iWebHostEnvironment)
         {
             _employeeRepository = employeeRepository;
-            this.hostingEnvironment = hostingEnvironment;
+            this.iWebHostEnvironment = iWebHostEnvironment;
         }
 
         [AllowAnonymous]
@@ -79,7 +80,7 @@ namespace EmployeeManagement.Controllers
                     if(model.ExistingPhotoPath !=null)
                     {
 
-                       string filePath= Path.Combine(hostingEnvironment.WebRootPath, "Uploads", model.ExistingPhotoPath);
+                       string filePath= Path.Combine(iWebHostEnvironment.WebRootPath, "Uploads", model.ExistingPhotoPath);
                         System.IO.File.Delete(filePath);
                     }
                     // ProcessUploadFile is a function that uploads phot to the uploads folder
@@ -105,7 +106,7 @@ namespace EmployeeManagement.Controllers
             string uniqueFileName = null;
             if (model.Photo != null)
             {    //getting file path(folder inside wwwroot)
-                string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "Uploads");
+                string uploadsFolder = Path.Combine(iWebHostEnvironment.WebRootPath, "Uploads");
 
                 //making the image name unique
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.Photo.FileName);
